@@ -1,20 +1,14 @@
 class Solution {
 public:
-    int countDigits(int n) {
-        int count=0;
-        int num=n;
-        while(n!=0){
-            int last=n%10;
-            if(last==0){
-                n=n/10;
-                continue;
+    int countDigits(int num) {
+        string str = to_string(num);
+        int cnt = 0;
+        for(int i=0;i<str.length();i++){
+            int val = str[i] - '0';
+            if(num%val == 0){
+                cnt += 1;
             }
-            else if((num%last)==0){
-                count++;
-            }
-            n=n/10;
         }
-        return count;
-        
+        return cnt;
     }
 };
