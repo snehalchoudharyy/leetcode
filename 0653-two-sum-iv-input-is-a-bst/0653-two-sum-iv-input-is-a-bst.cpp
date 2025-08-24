@@ -20,6 +20,7 @@ public:
     bool findTarget(TreeNode* root, int k) {
         vector<int> v;
         inorder(root,v);
+        if(v.size()<2) return false;
         int i=0;
         int j=v.size()-1;
         while(i<j){
