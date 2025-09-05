@@ -1,0 +1,57 @@
+//Position this line where user code will be pasted.
+class Solution {
+  public:
+    void dfsFill(int node,vector<vector<int>> &adj,vector<int> &vis,stack<int> &st){
+        vis[node]=1;
+        for(auto adjNode:adj[node]){
+            if(!vis[adjNode]){
+                dfsFill(adjNode,adj,vis,st);
+            }
+        }
+        st.push(node);
+    }
+    void dfsTraversal(int node,vector<vector<int>> &adjRev,vector<int> &vis){
+        vis[node]=1;
+        for(auto adjNode:adjRev[node]){
+            if(!vis[adjNode]){
+                dfsTraversal(adjNode,adjRev,vis);
+            }
+        }
+    }
+    int kosaraju(vector<vector<int>> &adj) {
+        // code here
+        //Step 1:store order of dfs in stack
+        //topo sort
+        int n=adj.size();
+        vector<int> vis(n,0);
+        
+        stack<int> st;
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                dfsFill(i,adj,vis,st);
+            }
+        }
+        //Step 2: make a reverse graph;
+        vector<vector<int>> adjReverse(n);
+        for(int u=0;u<n;u++){
+            for(int &v:adj[u]){
+                adjReverse[v].push_back(u);
+            }
+        }
+        
+        //step 3:call dfs on stack order
+        
+        int countScc=0;
+        vis=vector<int>(n,0);
+        while(!st.empty()){
+            int node=st.top();
+            st.pop();
+            if(!vis[node]){
+                dfsTraversal(node,adjReverse,vis);
+                countScc++;
+            }
+        }
+        return countScc;
+                
+    }
+};
