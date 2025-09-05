@@ -1,9 +1,50 @@
+#include<bits/stdc++.h>
 class Solution {
 public:
+    vector<int> parent;
+    vector<int> rank;
+  
+    int find(int x){
+        if(x==parent[x]){
+            return x;
+        }
+        return parent[x]=find(parent[x]);
+    } 
+    void unionFind(int x,int y){
+        int x_parent=find(x);
+        int y_parent=find(y);
+        if(x_parent==y_parent) return;
+        if(rank[x_parent]>rank[y_parent]){
+            parent[y_parent]=x_parent;
+        }
+        else if(rank[y_parent]>rank[x_parent]){
+            parent[x_parent]=y_parent;
+        }
+        else{
+            parent[x_parent]=y_parent;
+            rank[y_parent]++;
+        }
+    }
+    int minCost(vector<vector<int>> &edges){
+        int sum=0;
+        for(auto &edge:edges){
+            int u=edge[0];
+            int v=edge[1];
+            int wt=edge[2];
+            
+            int parent_u=find(u);
+            int parent_v=find(v);
+            if(parent_u!=parent_v){
+                unionFind(u,v);
+                sum=sum+wt;
+            }
+        }
+        return sum;
+    }
     int minCostConnectPoints(vector<vector<int>>& points) {
         int n=points.size();
-        using P=pair<int,int>;
-        vector<vector<P>> adj(n);
+        using T=tuple<int,int,int>;
+        vector<vector<int>> edges;
         for(int i=0;i<n;i++){
             for(int j=i+1;j<n;j++){
                 int x1=points[i][0];
@@ -12,31 +53,17 @@ public:
                 int y2=points[j][1];
 
                 int dist=abs(x1-x2)+abs(y1-y2);
-                adj[i].push_back({j,dist});
-                adj[j].push_back({i,dist});
-
+                edges.push_back({i,j,dist});
             }
         }
-        vector<int> inMst(n,0);
-        vector<int> parent(n,-1);
-        int cost=0;
-        using T=tuple<int,int,int>; //wt,node,parent
-        priority_queue<T,vector<T>,greater<T>> pq;
-        pq.push({0,0,-1});
-        while(!pq.empty()){
-            auto [wt,node,par]=pq.top();
-            pq.pop();
-            if(inMst[node]) continue; //if node visited check for next iteration
-            inMst[node]=1;
-            parent[node]=par;
-            cost=cost+wt;
-            for(auto [nextNode,nextCost]:adj[node]){
-                if(!inMst[nextNode]){    //check that next node is not visited
-                pq.push({nextCost,nextNode,node});
-
-                }
-            }
+        sort(edges.begin(),edges.end(),[](vector<int> &a,vector<int>&b){
+            return a[2]<b[2];
+        });
+        parent.resize(n);
+        for(int i=0;i<n;i++){
+            parent[i]=i;
         }
-        return cost;
+        rank.resize(n,0);
+        return minCost(edges);
     }
 };
