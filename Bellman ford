@@ -1,0 +1,31 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    vector<int> bellmanFord(int V, vector<vector<int>>& edges, int src) {
+        // Code here
+        vector<int> res(V,1e8);
+        res[src]=0;
+        for(int cnt=1;cnt<=V-1;cnt++){
+            for(auto &edge:edges){
+                int u=edge[0];
+                int v=edge[1];
+                int wt=edge[2];
+                if(res[u]!=1e8 && res[u]+wt<res[v]){
+                    res[v]=res[u]+wt;
+                }
+            }
+        }
+        for(auto &e:edges){
+            int u=e[0];
+            int v=e[1];
+            int wt=e[2];
+            if(res[u]!=1e8 && res[u]+wt<res[v]){
+                return {-1};
+            }
+        }
+        
+        return res;
+        
+    }
+};
