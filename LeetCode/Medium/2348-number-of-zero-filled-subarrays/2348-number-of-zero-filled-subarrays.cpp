@@ -5,7 +5,7 @@ public:
         long long result=0;
         int i=0;
         while(i<n){
-            int l=0;
+            long long l=0;
             if(nums[i]==0){
                 while(i<n && nums[i]==0){
                     l++;  //to find number of consecutive zero
